@@ -15,6 +15,7 @@ from backend.data.block import (
 from backend.data.model import SchemaField
 from backend.util.exceptions import BlockExecutionError
 from backend.util.request import Requests
+
 MOCK_ANALYTICS_PAYLOAD: dict[str, Any] = {
     "timeframe": {
         "start": "2025-01-01T00:00:00Z",
