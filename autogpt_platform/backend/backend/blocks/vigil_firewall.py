@@ -16,7 +16,6 @@ from backend.data.model import SchemaField
 from backend.util.exceptions import BlockExecutionError
 from backend.util.request import Requests
 
-
 MOCK_ANALYTICS_PAYLOAD: dict[str, Any] = {
     "timeframe": {
         "start": "2025-01-01T00:00:00Z",
@@ -218,11 +217,9 @@ class VigilFirewallBlock(Block):
 
         incidents_raw = payload.get("incidents")
         incidents: list[dict[str, Any]] = (
-            [
-                incident
-                for incident in incidents_raw
-                if isinstance(incident, dict)
-            ][: max(limit, 1)]
+            [incident for incident in incidents_raw if isinstance(incident, dict)][
+                : max(limit, 1)
+            ]
             if isinstance(incidents_raw, list)
             else []
         )
@@ -231,9 +228,7 @@ class VigilFirewallBlock(Block):
             incident.get("severity", "unknown") for incident in incidents
         )
         rule_ids = {
-            incident.get("rule_id")
-            for incident in incidents
-            if incident.get("rule_id")
+            incident.get("rule_id") for incident in incidents if incident.get("rule_id")
         }
 
         completion = {
