@@ -118,7 +118,7 @@ CredentialsMetaInput = _CredentialsMetaInput[
 
 
 # === COMPREHENSIVE __all__ EXPORT ===
-__all__ = [
+_exported_symbols = [
     # Core Block System
     "Block",
     "BlockCategory",
@@ -171,4 +171,4 @@ __all__ = [
 ]
 
 # Remove None values from __all__
-__all__ = [name for name in __all__ if globals().get(name) is not None]
+__all__ = [name for name in _exported_symbols if globals().get(name) is not None]
