@@ -170,7 +170,14 @@ class VigilFirewallBlock(Block):
             params["include_rules"] = "true"
 
         parsed = urlparse(base_url)
-        trusted_hosts = [parsed.hostname] if parsed.hostname else []
+        # Ensure trusted origins are provided as full URLs (scheme://host)
+        if parsed.hostname and parsed.scheme:
+            trusted_hosts = [f"{parsed.scheme}://{parsed.hostname}"]
+        elif parsed.hostname:
+            # Fallback to https if scheme is missing
+            trusted_hosts = [f"https://{parsed.hostname}"]
+        else:
+            trusted_hosts = ["https://api.vigil.ai"]
 
         headers = {
             "Authorization": f"Bearer {input_data.api_key}",
@@ -179,7 +186,7 @@ class VigilFirewallBlock(Block):
 
         try:
             response = await Requests(
-                trusted_origins=trusted_hosts or ["api.vigil.ai"],
+                trusted_origins=trusted_hosts,
                 raise_for_status=True,
             ).get(endpoint, headers=headers, params=params)
         except Exception as exc:  # pragma: no cover - network errors covered in summary
@@ -266,7 +273,8 @@ class VigilFirewallBlock(Block):
         if isinstance(value, str):
             return value
         if isinstance(value, (int, float)):
-            return datetime.fromtimestamp(value, tz=timezone.utc).isoformat()
+            # Normalize numeric epoch timestamps to RFC3339 with 'Z' for UTC
+            return datetime.fromtimestamp(value, tz=timezone.utc).isoformat().replace("+00:00", "Z")
         return None
 
     @staticmethod
@@ -293,3 +301,4 @@ class VigilFirewallBlock(Block):
         if not counts:
             return None
         return counts.most_common(1)[0][0]
+
