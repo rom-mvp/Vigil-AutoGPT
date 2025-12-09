@@ -141,6 +141,16 @@ export type GoogleDrivePickerConfig = {
   allowed_views?: AttachmentView[];
   allowed_mime_types?: string[];
   scopes?: string[];
+  /**
+   * Auto-credentials configuration for combined picker + credentials fields.
+   * When present, the picker will include _credentials_id in the output.
+   */
+  auto_credentials?: {
+    provider: string;
+    type: string;
+    scopes?: string[];
+    kwarg_name: string;
+  };
 };
 
 /**
@@ -315,7 +325,8 @@ export type GraphExecutionMeta = {
     | "COMPLETED"
     | "TERMINATED"
     | "FAILED"
-    | "INCOMPLETE";
+    | "INCOMPLETE"
+    | "REVIEW";
   started_at: Date;
   ended_at: Date;
   stats: {
@@ -452,7 +463,8 @@ export type NodeExecutionResult = {
     | "RUNNING"
     | "COMPLETED"
     | "TERMINATED"
-    | "FAILED";
+    | "FAILED"
+    | "REVIEW";
   input_data: Record<string, any>;
   output_data: Record<string, Array<any>>;
   add_time: Date;
